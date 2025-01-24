@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'LSRS.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATES = [
     {
@@ -76,14 +76,14 @@ WSGI_APPLICATION = 'LSRS.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # 数据库引擎
-        'NAME': 'lsrs_db',                # 数据库名称
+        'NAME': 'lsrs',                # 数据库名称  笔记本：lsrs_db  否则lsrs
         'USER': 'root',                        # 数据库用户名
         'PASSWORD': '123456',           # 数据库密码
         'HOST': 'localhost',                   # 数据库主机
         'PORT': '3306',                        # 数据库端口
     }
 }
-
+AUTH_USER_MODEL="LSRS.Users"
 
 
 # Password validation
@@ -121,12 +121,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
+import os
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]#确保正确引用css文件和js文件
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 INSTALLED_APPS = [
+    "LSRS.apps.LSRSConfig",
     "polls.apps.PollsConfig",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -135,3 +139,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+# settings.py
+SESSION_COOKIE_AGE = 1800  # 30分钟（以秒为单位） 会话保持时间 登录有效时间
+SESSION_SAVE_EVERY_REQUEST = True  # 每个请求都保存会话

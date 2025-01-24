@@ -15,15 +15,18 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.urls import include, path
 from django.http import HttpResponse
-
+from . import views
 # 定义一个简单的主页视图
-def home(request):
-    return HttpResponse("Welcome to the Library Seat Reservation System!")
+namespace="LSRS"
+
 
 urlpatterns = [
-    path("polls/", include("polls.urls")),
-    path("LSRS/", admin.site.urls),
-    path('',home)
+    path('',views.home,name="home"),
+    path("login/",views.login_view,name="login"),
+    path("cd",views.current_datetime,name="ct"),
+    path("register",views.register_view,name="register"),
+    path("admin",admin.site.urls)
 ]
