@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-han">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,25 +7,16 @@
     <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 <body>
-    <header>
-        <h1>Welcome to My Website</h1>
-        <nav>
-            <ul>
-                <li><a href="{% url '' %}">Home</a></li>
-                <li><a href="{% url 'about' %}">About</a></li>
-                <li><a href="{% url 'contact' %}">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-    
-    <main>
-        {% block content %}
-        <!-- Default content goes here -->
-        {% endblock %}
-    </main>
-    
-    <footer>
-        <p>&copy; 2025 My Website. All rights reserved.</p>
-    </footer>
+    {%block body%}
+    {%end block%}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          let hour = new Date().getHours();
+          if (hour >= 18 || hour < 6) {
+            document.documentElement.setAttribute("data-bs-theme", "dark");
+          }
+        });
+      </script>
+      
 </body>
 </html>

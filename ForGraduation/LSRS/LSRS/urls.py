@@ -28,5 +28,9 @@ urlpatterns = [
     path("login/",views.login_view,name="login"),
     path("cd",views.current_datetime,name="ct"),
     path("register",views.register_view,name="register"),
-    path("admin",admin.site.urls)
+    path("admin",admin.site.urls),
+    path("mine",views.profile_view,name="mine"),
+    path("settings",views.settings_view,name="settings"),
+    path("message",views.message,name="messages"),
+    path("logout",views.logout_view,name="logout")
 ]

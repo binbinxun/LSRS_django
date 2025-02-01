@@ -19,7 +19,7 @@ class Reservations(models.Model):
     status = models.CharField(max_length=9, blank=True, null=True)
     checked_in = models.IntegerField(blank=True, null=True)
     check_in_time = models.DateTimeField(blank=True, null=True)
-
+    objects=BaseUserManager()
     class Meta:
         managed = False
         db_table = 'reservations'

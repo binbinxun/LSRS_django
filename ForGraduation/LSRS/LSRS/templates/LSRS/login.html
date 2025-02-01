@@ -47,5 +47,13 @@
 </div>
 <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let hour = new Date().getHours();
+      if (hour >= 18 || hour < 6) {
+        document.documentElement.setAttribute("data-bs-theme", "dark");
+      }
+    });
+  </script>
 </body>
 </html>
