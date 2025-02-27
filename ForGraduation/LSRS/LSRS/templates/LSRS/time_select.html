@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>预约 {{ seat.seat_id }} 号座位</h2>
+    
+    {% if error_message %}
+    <div class="alert alert-danger">{{ error_message }}</div>
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label class="form-label">开始时间</label>
+            <input type="datetime-local" 
+       name="start_time"
+       step="900"  
+       <!-- 强制15分钟步长 -->
+       min="{{ min_start }}"  <!-- 08:00 -->
+       max="{{ max_end }}"    <!-- 22:00 -->
+       value="{{ now_aligned }}"  <!-- 初始值对齐 -->
+       required>
+
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">结束时间</label>
+            <input type="datetime-local" 
+                   name="end_time" 
+                   class="form-control"
+                   min="{{ min_start }}"
+                   max="{{ max_end }}"
+                   required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">提交预约</button>
+    </form>
+</div>
+
+<script>
+// 实时时间校验
+document.querySelectorAll('input[type="datetime-local"]').forEach(input => {
+    input.addEventListener('change', () => {
+        const startInput = document.querySelector('input[name="start_time"]');
+        const endInput = document.querySelector('input[name="end_time"]');
+        
+        if (startInput.value && endInput.value) {
+            const start = new Date(startInput.value);
+            const end = new Date(endInput.value);
+            
+            // 自动修正结束时间不超过最大时长
+            const maxEnd = new Date(start.getTime() + {{ max_duration.total_seconds }} * 1000);
+            if (end > maxEnd) {
+                endInput.value = maxEnd.toISOString().slice(0, 16);
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

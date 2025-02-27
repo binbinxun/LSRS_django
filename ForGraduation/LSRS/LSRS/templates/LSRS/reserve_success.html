@@ -1,0 +1,18 @@
+{% extends 'base.html' %} {% block title %}预约成功{% endblock %} {% block body%}
+<h1>预约成功！</h1>
+
+<p>您的座位预约已成功提交。</p>
+
+<p>预约信息：</p>
+<ul>
+  <li>座位类型：{{ reservation.seat.seat_type }}</li>
+  <li>座位状态：{{ reservation.seat.status }}</li>
+  <li>预约开始时间：{{ reservation.start_time }}</li>
+  <li>预约结束时间：{{ reservation.end_time }}</li>
+</ul>
+
+<p>感谢您的预约！</p>
+
+<!-- 提供返回首页的按钮 -->
+<a href="{% url 'mine' %}"><button>返回首页</button></a>
+{% endblock %}

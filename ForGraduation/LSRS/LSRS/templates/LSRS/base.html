@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html lang="zh-han">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}My Website{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
-</head>
-<body>
-    {%block body%}
-    {%end block%}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+  </head>
+  <body>
+    {%block body%} {%endblock%}
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          let hour = new Date().getHours();
-          if (hour >= 18 || hour < 6) {
-            document.documentElement.setAttribute("data-bs-theme", "dark");
-          }
-        });
-      </script>
-      
-</body>
+      document.addEventListener("DOMContentLoaded", function () {
+        let hour = new Date().getHours();
+        if (hour >= 18 || hour < 6) {
+          document.documentElement.setAttribute("data-bs-theme", "dark");
+        }
+      });
+    </script>
+  </body>
 </html>

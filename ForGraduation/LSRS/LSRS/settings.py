@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,14 +30,6 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -75,12 +67,17 @@ WSGI_APPLICATION = 'LSRS.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',  # 数据库引擎
-        'NAME': 'lsrs',                # 数据库名称  笔记本：lsrs_db  否则lsrs
-        'USER': 'root',                        # 数据库用户名
-        'PASSWORD': '123456',           # 数据库密码
-        'HOST': 'localhost',                   # 数据库主机
-        'PORT': '3306',                        # 数据库端口
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'lsrs',
+        'USER': 'root',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
+            'isolation_level': 'read committed',  # 新增事务隔离级别
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",  # 严格模式
+        },
+        'ATOMIC_REQUESTS': True,  # 新增自动事务支持
     }
 }
 AUTH_USER_MODEL="LSRS.Users"
@@ -130,7 +127,8 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 INSTALLED_APPS = [
-    "LSRS.apps.LSRSConfig",
+    'lsrs2',
+    "LSRS",
     "polls.apps.PollsConfig",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -142,3 +140,52 @@ INSTALLED_APPS = [
 # settings.py
 SESSION_COOKIE_AGE = 1800  # 30分钟（以秒为单位） 会话保持时间 登录有效时间
 SESSION_SAVE_EVERY_REQUEST = True  # 每个请求都保存会话
+
+# settings.py 底部添加以下配置
+import os
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'ERROR',  # 只记录ERROR及以上级别
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/error.log'),
+            'maxBytes': 1024*1024*5,  # 5MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+            'encoding': 'utf-8',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+        'LSRS.reservations': {  # 专门记录预约相关日志
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django': {  # Django框架本身的日志
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+    },
+}
+# settings.py
+MAX_DURATION_MODE = 0  # 0=启用限制 1=关闭限制
+DEFAULT_MAX_DURATION = timedelta(hours=14)  # 08:00-22:00

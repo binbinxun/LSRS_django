@@ -1,0 +1,60 @@
+Internal Server Error: /LSRS/reserve/
+Traceback (most recent call last):
+  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python313\Lib\contextlib.py", line 85, in inner
+    return func(*args, **kwds)
+  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "E:\毕设\ForGraduation\LSRS\LSRS\views.py", line 78, in reserve_seat
+    min_start_time = timezone.now().strftime("%Y-%m-%dT%H:%M")
+                     ^^^^^^^^^^^^
+AttributeError: type object 'datetime.timezone' has no attribute 'now'
+"GET /LSRS/reserve/ HTTP/1.1" 500 78585
+Internal Server Error: /LSRS/reserve/
+Traceback (most recent call last):
+  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python313\Lib\contextlib.py", line 85, in inner
+    return func(*args, **kwds)
+  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "E:\毕设\ForGraduation\LSRS\LSRS\views.py", line 76, in reserve_seat
+    min_start_time = timezone.now().strftime("%Y-%m-%dT%H:%M")
+                     ^^^^^^^^^^^^
+AttributeError: type object 'datetime.timezone' has no attribute 'now'
+"GET /LSRS/reserve/ HTTP/1.1" 500 78722
+Internal Server Error: /LSRS/reserve/
+Traceback (most recent call last):
+  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python313\Lib\contextlib.py", line 85, in inner
+    return func(*args, **kwds)
+  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "E:\毕设\ForGraduation\LSRS\LSRS\views.py", line 76, in reserve_seat
+    min_start_time = timezone.now().strftime("%Y-%m-%dT%H:%M")
+                     ^^^^^^^^^^^^
+AttributeError: type object 'datetime.timezone' has no attribute 'now'
+"GET /LSRS/reserve/ HTTP/1.1" 500 78585
+Internal Server Error: /LSRS/reserve/
+Traceback (most recent call last):
+  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python313\Lib\contextlib.py", line 85, in inner
+    return func(*args, **kwds)
+  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "E:\毕设\ForGraduation\LSRS\LSRS\views.py", line 76, in reserve_seat
+    min_start_time = timezone.now().strftime("%Y-%m-%dT%H:%M")
+                     ^^^^^^^^^^^^
+AttributeError: type object 'datetime.timezone' has no attribute 'now'
+"GET /LSRS/reserve/ HTTP/1.1" 500 78722

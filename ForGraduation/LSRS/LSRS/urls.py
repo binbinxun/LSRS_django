@@ -28,9 +28,10 @@ urlpatterns = [
     path("login/",views.login_view,name="login"),
     path("cd",views.current_datetime,name="ct"),
     path("register",views.register_view,name="register"),
-    path("admin",admin.site.urls),
     path("mine",views.profile_view,name="mine"),
     path("settings",views.settings_view,name="settings"),
     path("message",views.message,name="messages"),
-    path("logout",views.logout_view,name="logout")
+    path("logout",views.logout_view,name="logout"),
+    path('reserve/', views.reserve_seat, name='reserve_seat'),  # 添加预约页面的 URL 路由
+    path('reservation_success/', views.reservation_success, name='reservation_success')
 ]

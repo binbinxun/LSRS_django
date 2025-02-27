@@ -1,0 +1,21 @@
+
+为reservation表添加索引
+ indexes = [
+            models.Index(fields=['seat', 'start_time', 'end_time']),
+            models.Index(fields=['status', 'end_time'])
+        ]
+
+ 使用 Locust 模拟并发请求
+    locust -f test_reservation.py
+
+添加定时任务cron
+
+本项目利用了django的如下模块
+视图view
+模型model
+模板template
+表单form
+路由url
+管理后台admin
+
+

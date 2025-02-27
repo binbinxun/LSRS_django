@@ -1,0 +1,100 @@
+{% extends 'LSRS/base.html' %} 
+
+{% block title %}座位预约{% endblock %}
+{% block body %}
+
+<h1>座位预约</h1>
+
+<form method="POST" class="container mt-4">
+  {% csrf_token %}
+
+  <div class="mb-3">
+    <label for="seat_id" class="form-label">选择座位:</label>
+    <select name="seat_id" id="seat_id" class="form-select" required>
+      <option value="" disabled selected>请选择座位</option>
+      {% for seat in available_seats %}
+      <option value="{{ seat.seat_id }}">
+       座位号：{{ seat.seat_id }} ({{ seat.seat_type }}) ({{ seat.status }})
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="start_time" class="form-label">开始时间:</label>
+    <!-- 开始时间输入框修改 -->
+            <!-- 强制10分钟步长[^5] -->
+<input type="datetime-local" 
+       name="start_time"
+       id="start_time"
+       step="600"
+       min="{{ min_start|date:'Y-m-d\TH:i' }}"  
+
+       max="{{ max_end|date:'Y-m-d\TH:i' }}"
+       value="{{ now_aligned|date:'Y-m-d\TH:i' }}"
+       class="form-control"
+       required>
+
+
+  </div>
+
+  <div class="mb-3">
+    <label for="end_time" class="form-label">结束时间:</label>
+   <input type="datetime-local"
+       id="end_time"
+       name="end_time"
+       class="form-control"
+       step="600"
+       min="{{ min_start|date:'Y-m-d\TH:i' }}"
+       max="{{ max_end|date:'Y-m-d\TH:i' }}"
+       required>
+
+  </div>
+
+  <button type="submit" class="btn btn-primary">提交预约</button>
+</form>
+
+{% if error_message %}
+<p style="color: red">{{ error_message }}</p>
+{% endif %}
+
+<script>
+  // 获取当前日期
+  const now = new Date();
+  const startTimeInput = document.getElementById('start_time');
+  const endTimeInput = document.getElementById('end_time');
+
+  // 更新结束时间的限制
+  function updateEndTimeLimits() {
+    const startTime = new Date(startTimeInput.value);
+
+    // 确保结束时间在同一天，并且在开始时间之后
+    const startDate = startTime.toISOString().split('T')[0]; // 获取开始时间的日期部分
+    const minEndTime = new Date(startTime);
+    minEndTime.setMinutes(minEndTime.getMinutes() + 30); // 设置结束时间至少比开始时间晚30分钟
+
+    // 设置结束时间的 min 和 max 限制
+    endTimeInput.min = minEndTime.toISOString().slice(0, 16); // 设置结束时间最小限制
+    endTimeInput.max = startDate + 'T22:00'; // 设置结束时间最大限制为当天23:59
+  }
+
+  // 当开始时间发生变化时，更新结束时间的限制
+  startTimeInput.addEventListener('change', updateEndTimeLimits);
+
+  // 初始时更新结束时间的限制
+  updateEndTimeLimits();
+  // static/js/time_validate.js
+document.getElementById('start_time').addEventListener('change', function(e) {
+    const date = new Date(e.target.value);
+    date.setMinutes(Math.floor(date.getMinutes() / 10) * 10);  // 强制10分钟粒度[^5]
+    e.target.value = date.toISOString().slice(0, 16);
+    document.getElementById('end_time').addEventListener('change', function(e) {
+    const date = new Date(e.target.value);
+    date.setMinutes(Math.floor(date.getMinutes() / 10) * 10);  // 强制10分钟粒度[^5]
+    e.target.value = date.toISOString().slice(0, 16);
+});
+
+</script>
+
+
+{% endblock %}
