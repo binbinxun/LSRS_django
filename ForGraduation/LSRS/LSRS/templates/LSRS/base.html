@@ -9,6 +9,7 @@
   </head>
   <body>
     {%block body%} {%endblock%}
+     <a class="nav-link" href="{%url 'mine'%}">返回个人主页</a>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         let hour = new Date().getHours();

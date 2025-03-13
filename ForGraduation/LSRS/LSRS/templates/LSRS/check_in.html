@@ -1,0 +1,25 @@
+{% extends 'LSRS/base.html' %}{% block title %}签到{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>签到</h1>
+                <p>Reservations count: {{ reservations|length }}</p>
+
+                {% for rsv in reservations%}
+                <form action="{% url 'check_in' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="rsv_id" style="display: none" value="{{rsv.reservation_id}}">
+                        <p>
+                        座位号：{{ rsv.seat_id }}起始时间：{{ rsv.start_time }}结束时间：{{ rsv.end_time }}
+                        </p>
+                    <button type="submit" class="btn btn-primary">签到</button>
+                </form>
+                {% endfor %}
+            </div>
+        </div>
+        {% if error_message %}
+<p style="color: red">{{ error_message }}</p>
+{% endif %}
+    </div>
+{% endblock %}

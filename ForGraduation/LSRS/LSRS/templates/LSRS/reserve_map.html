@@ -1,0 +1,203 @@
+{% extends 'LSRS/base.html' %}
+{% load static %}
+{% block body %}
+<!-- <div class="seat-grid">
+  {% for seat in seats %}
+    <div class="seat" 
+         data-seat-id="{{ seat.seat_id }}"
+         onclick="showReservationModal( {{ seat.seat_id }} )"> 
+      {{ seat.seat_id }} ({{ seat.seat_type }})
+    </div>
+  {% endfor %}
+</div> -->
+<style>
+.error-message {
+  color: #dc3545;
+  margin: 10px 0;
+  font-size: 0.9em;
+}
+
+.time-picker {
+  margin: 15px 0;
+}
+
+.time-picker label {
+  display: inline-block;
+  width: 80px;
+}</style>
+<svg id="seat-map-container" width="100%" height="1000">
+  <!-- 设施图层优先渲染 -->
+  <g id="static-layer">
+    <rect x="0" y="0" width="100%" height="100%" fill="#f5f5f5"/>
+    <image x="20" y="20" href="{% static 'svg/door.svg' %}" class="facility-icon"/>
+  </g>
+  <!-- 动态座位图层 -->
+  <g id="dynamic-layer">
+    {% for seat in seats %}
+    <g class="seat-group" transform="translate({{ seat.x_pos }},{{ seat.y_pos }})">
+      <circle class="seat"
+              r="6"
+              data-seatid="{{ seat.seat_id }}"
+              onclick="handleSeatClick('{{ seat.seat_id }}')"/>
+      {% if seat.has_power %}
+      <text x="-6" y="6" class="power-indicator text-small">⚡</text>
+      {% endif %}
+    </g>
+    {% endfor %}
+  </g>
+</svg>
+<!-- 模态框容器 -->
+<div id="reservationModal" style="display:none">
+  <h3>预约 <span id="modalSeatId"></span> 号座位</h3>
+  <div id="timeConflictTips" class="error-message error"></div>
+  <form id="bookingForm" action="{% url 'seat_map' %}" method="post">
+    {% csrf_token %}
+    <input type="text" name="seat_id" id="seatId" value="" hidden> <!-- 隐藏的座位ID输入框 -->
+    <div class="time-picker">
+      <label>开始时间：</label>
+      <input type="datetime-local" 
+             name="start_time" 
+             id="startTime"
+             required>
+    </div>
+    <div class="time-picker">
+      <label>结束时间：</label>
+      <input type="datetime-local" 
+             name="end_time" 
+             id="endTime"
+             required>
+    </div>
+    <button type="submit">确认预约</button>
+  </form>
+</div>
+{%if error%}
+<p style="color: red">{{ error }}</p>
+{% endif %}
+{% if success %}
+<p style="color: green">{{ success }}</p>
+{% endif %}
+
+<script>
+  var dt;
+  function handleSeatClick(seatId) {
+    // console.log("Clicked seat ID:", seatId);
+
+    // 更新座位的颜色或状态
+    const seatElement = document.querySelector(`.seat[data-seatid="${seatId}"]`);
+    if (seatElement) {
+        seatElement.style.fill = "blue"; // 点击后将其标记为蓝色
+    }
+    document.getElementById("modalSeatId").innerText = seatId;
+    document.getElementById("modalSeatId").value = seatId;
+    document.getElementById("seatId").value = seatId;
+   const apiUrl = "{% url 'seat_detail_api' seat_id=0 %}".replace('0', seatId);
+    // 示例：触发API调用以获取座位状态
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            console.log("error_message:", data.error_message);
+            console.log("reservations:", data.reservations);
+            document.getElementById("reservationModal").style.display = "block";
+            // 根据API返回的数据更新UI
+            dt=data;
+        })
+        .catch(error => console.error("Error fetching seat status:", error));
+}
+
+function hasTimeConflict(userStart, userEnd,rsvs) {
+  if (rsvs.length === 0) {
+    return false;
+  }
+  return rsvs.some(res => {
+    const resStart = new Date(res.start_time);
+    const resEnd = new Date(res.end_time);
+    return (userStart < resEnd) && (userEnd > resStart);
+  });
+}
+
+// 实时输入校验
+document.getElementById('startTime').addEventListener('input', validateTime);
+document.getElementById('endTime').addEventListener('input', validateTime);
+
+function validateTime() {
+  const start = new Date(document.getElementById('startTime').value);
+  const end = new Date(document.getElementById('endTime').value);
+  const tips = document.getElementById('timeConflictTips');
+  
+  // 清空错误提示
+  tips.textContent = '';
+  
+  // 基础校验
+  if (start >= end) {
+    tips.textContent = '错误：结束时间必须晚于开始时间';
+    return false;
+  }
+  
+  if( start.getHours < 8) {
+    tips.textContent = '错误：开始时间必须晚于8点';
+    return false;
+  }
+
+  if( end.getHours > 22) {
+    tips.textContent = '错误：结束时间必须早于22点';
+    return false;
+  }
+
+  // 冲突校验
+  if (hasTimeConflict(start, end,dt.reservations)) {
+    tips.textContent = '错误：该时段已被预约，请重新选择';
+    
+    return false;
+  }
+  
+  return true;
+}
+
+// 修改提交逻辑
+document.getElementById("bookingForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  // 冲突校验
+  if (hasTimeConflict(start, end,dt.reservations)) {
+    tips.textContent = '错误：该时段已被预约，请重新选择';
+    return false;
+  }
+  
+  return true;
+}
+
+// 修改提交逻辑
+// document.getElementById("bookingForm").addEventListener("submit", function(e) {
+//   e.preventDefault(); // 阻止表单默认提交
+
+//   const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value; // 获取 CSRF Token
+//   const formData = {
+//     seat_id: document.getElementById("modalSeatId").value, // 确保你有获取座位ID的逻辑
+//     start_time: document.getElementById("startTime").value,
+//     end_time: document.getElementById("endTime").value,
+//   };
+//   fd=new FormData();
+//   fd.append('seat_id',document.getElementById("modalSeatId").value);
+//   fd.append('start_time',document.getElementById("startTime").value);
+//   fd.append('end_time',document.getElementById("endTime").value);
+//   fd.append('csrfmiddlewaretoken', csrfToken);
+//   fetch("{% url 'seat_map' %}", {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'X-CSRFToken': csrfToken, // 关键：将 Token 放在请求头
+//     },
+//     body: fd,
+//   })
+//   .then(response => response.json())
+//   .then(data => {
+//     if(data.success){
+//       alert('预约成功');
+//       location.reload();
+//     }else{
+//       alert('预约失败'+data.error)
+//     }
+//   })
+//   .catch(error => console.error('Error:', error));
+// });
+</script>
+{% endblock %}

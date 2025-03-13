@@ -1,18 +1,27 @@
-{% extends 'base.html' %} {% block title %}预约成功{% endblock %} {% block body%}
-<h1>预约成功！</h1>
-
-<p>您的座位预约已成功提交。</p>
-
-<p>预约信息：</p>
-<ul>
-  <li>座位类型：{{ reservation.seat.seat_type }}</li>
-  <li>座位状态：{{ reservation.seat.status }}</li>
-  <li>预约开始时间：{{ reservation.start_time }}</li>
-  <li>预约结束时间：{{ reservation.end_time }}</li>
-</ul>
-
-<p>感谢您的预约！</p>
-
-<!-- 提供返回首页的按钮 -->
-<a href="{% url 'mine' %}"><button>返回首页</button></a>
+{% extends 'LSRS/base.html' %} {% block title %}预约成功{% endblock %}
+ {% block body%}
+  <link rel="stylesheet" type="text/css" href="../bootstrap-5.3.0-alpha1-dist/css/bootstrap.min.css" />
+  <div class="container">
+    <div class="card shadow-lg  mt-5">
+      <div class="card-body">
+        <h1 class="card-title text-center text-primary">预约成功</h1>
+        <p class="text-center text-success card-subtitle">您的座位预约已成功提交</p>
+        <hr>
+        <h5>预约信息：</h5>
+        <ul>
+          <li><strong>座位类型：</strong>{{ reservation.seat.seat_type }}</li>
+          <li><strong>座位状态：</strong>{{ reservation.seat.status }}</li>
+          <li><strong>预约开始时间：</strong>{{ reservation.start_time }}</li>
+          <li><strong>预约结束时间：</strong>{{ reservation.end_time }}</li>
+        </ul>
+        <p class="text-center text-success">感谢您的预约！</p>
+        <div class="text-center">
+          <a href="{% url 'mine' %}">
+            <button class="btn btn-primary btn-lg" type="button">返回首页</button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="../bootstrap-5.3.0-alpha1-dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}

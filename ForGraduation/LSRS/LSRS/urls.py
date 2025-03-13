@@ -33,5 +33,11 @@ urlpatterns = [
     path("message",views.message,name="messages"),
     path("logout",views.logout_view,name="logout"),
     path('reserve/', views.reserve_seat, name='reserve_seat'),  # 添加预约页面的 URL 路由
-    path('reservation_success/', views.reservation_success, name='reservation_success')
+    path('reservation_success/', views.reservation_success, name='reservation_success'),
+    path('check_in',views.check_in,name='check_in'),
+    path('seat_map', views.reserve_map, name='seat_map'),
+    path("api/seat_detail/<int:seat_id>",
+         views.seat_detail_api,
+        name="seat_detail_api"),
+    path('reserve_cancel',views.reserve_cancel,name='reserve_cancel')
 ]
